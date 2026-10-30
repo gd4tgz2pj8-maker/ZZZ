@@ -63,24 +63,25 @@ button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.
 </div>
 <div class="message" id="message" aria-live="polite"></div>
 <div class="actions">
+
 <button class="secondary" id="hint">ヒント</button>
 
- <div id="hintPanel" style="display:none;">
+<div id="hintPanel" style="display:none;">
   <p>ヒントを見たい「？」のマスをタップ</p>
 
   <div class="hint-buttons">
-    <button onclick="showHint('faction')">陣営</button>
-    <button onclick="showHint('attribute')">属性・特性</button>
-    <button onclick="showHint('rarity')">レア度</button>
+    <button type="button" id="hintFaction">陣営</button>
+    <button type="button" id="hintAttribute">属性・特性</button>
+    <button type="button" id="hintRarity">レア度</button>
   </div>
 
   <p>マスを選び、見たいヒントだけ開いてね。</p>
 
   <div id="hintResult"></div>
 </div>
- 
+
 <button class="secondary" id="giveup">ギブアップ</button>
-<button class="secondary" id="reset">最初から</button>
+<button class="secondary" id="reset">最初から</button> 
 </div>
 <div class="list" id="list"></div>
 </section>
