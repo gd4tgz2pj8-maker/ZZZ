@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ゼンゼロ キャラクター名前当てクイズ</title>
 <style>
+.answer.selected {
+  background: #dceeff;
+  border: 2px solid #3498db;
+  color: #1769aa;
+}  
 :root{--bg:#10131b;--panel:#1b202c;--panel2:#242b39;--text:#f3f5fa;--muted:#aab4c5;--accent:#EE7C14;--green:#6ee7a8;--red:#ff7b86;--line:#343d4e}
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(circle at top,#252d3c 0,#10131b 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
@@ -173,8 +178,9 @@ function renderList(){
  characters.forEach((c,i)=>{
   const d=document.createElement("div");
 
-  d.className="answer"+(found.has(i)?" found":"");
-
+  d.className = "answer"
+  + (found.has(i) ? " found" : "")
+  + (selectedHintIndex === i ? " selected" : "");
   d.textContent=found.has(i)?c.name:"？？？？";
 
   if(!found.has(i)){
@@ -234,6 +240,8 @@ function selectHint(index){
  selectedHintIndex=index;
 
  $("hintResult").textContent="キャラクターを選択中";
+
+ renderList();
 }  
 
 function showHint(type){
