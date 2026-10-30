@@ -170,8 +170,13 @@ function renderList(){
  $("list").innerHTML="";
  characters.forEach((c,i)=>{
   const d=document.createElement("div");d.className="answer"+(found.has(i)?" found":"");
-  d.textContent=found.has(i)?c.name:"？？？？";
-  $("list").appendChild(d);
+d.textContent=found.has(i)?c.name:"？？？？";
+
+if(!found.has(i)){
+  d.addEventListener("click",()=>selectHint(i));
+}
+
+$("list").appendChild(d);
  });
  $("score").textContent=found.size;
  $("total").textContent=characters.length;
@@ -203,12 +208,54 @@ function reset(){
 }
 $("submit").addEventListener("click",answer);
 $("answer").addEventListener("keydown",e=>{if(e.key==="Enter")answer();});
+
+let selectedHintIndex = null;
+
 $("hint").addEventListener("click",()=>{
- const remaining=characters.filter((c,i)=>!found.has(i));
- if(!remaining.length){say("全部正解済み！","good");return;}
- const c=remaining[Math.floor(Math.random()*remaining.length)];
- say("ヒント：未回答のキャラクターは "+remaining.length+" 人。所属や登場シーンを思い出してみよう！");
+ const panel=$("hintPanel");
+
+ panel.style.display=panel.style.display==="none"?"block":"none";
+
+ $("hintResult").textContent="";
+ selectedHintIndex=null;
 });
+
+function selectHint(index){
+ if(found.has(index))return;
+
+ selectedHintIndex=index;
+
+ $("hintResult").textContent=
+ "選択中："+characters[index].name;
+}
+
+function showHint(type){
+ if(selectedHintIndex===null){
+  $("hintResult").textContent="先に「？」のマスを選んでね！";
+  return;
+ }
+
+ const c=characters[selectedHintIndex];
+
+ const hintData={
+  faction:c.faction,
+  attribute:c.attribute,
+  rarity:c.rarity
+ };
+
+ const labels={
+  faction:"陣営",
+  attribute:"属性・特性",
+  rarity:"レア度"
+ };
+
+ $("hintResult").textContent=
+ labels[type]+"："+(hintData[type]||"ヒント未登録");
+}
+
+$("hintFaction").addEventListener("click",()=>showHint("faction"));
+$("hintAttribute").addEventListener("click",()=>showHint("attribute"));
+$("hintRarity").addEventListener("click",()=>showHint("rarity"));  
 $("giveup").addEventListener("click",finish);
 $("reset").addEventListener("click",reset);
 $("again").addEventListener("click",reset);
