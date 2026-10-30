@@ -166,24 +166,30 @@ const characters = [
 const $=id=>document.getElementById(id);
 let found=new Set(),seconds=1200,timer=null,ended=false;
 const norm=s=>s.toLowerCase().replace(/[ 　・･\-‐‑—ー_]/g,"").replace(/[「」『』（）()]/g,"").trim();
+
 function renderList(){
  $("list").innerHTML="";
- characters.forEach((c,i)=>{
-  const d=document.createElement("div");d.className="answer"+(found.has(i)?" found":"");
-d.textContent = found.has(i) ? c.name : "？？？？";
 
-if(!found.has(i)){
-  d.addEventListener("click",()=>{
-    selectedHintIndex = i;
-    $("hintResult").textContent = "キャラクターを選択しました。";
-  });
-}
-$("list").appendChild(d);
+ characters.forEach((c,i)=>{
+  const d=document.createElement("div");
+
+  d.className="answer"+(found.has(i)?" found":"");
+
+  d.textContent=found.has(i)?c.name:"？？？？";
+
+  if(!found.has(i)){
+   d.addEventListener("click",()=>{
+    selectHint(i);
+   });
+  }
+
+  $("list").appendChild(d);
  });
+
  $("score").textContent=found.size;
  $("total").textContent=characters.length;
  $("bar").style.width=(found.size/characters.length*100)+"%";
-}
+}  
 function say(text,type=""){ $("message").textContent=text;$("message").className="message "+type; }
 function startTimer(){
  clearInterval(timer);timer=setInterval(()=>{if(ended)return;seconds--;updateTime();if(seconds<=0)finish();},1000);
@@ -221,14 +227,14 @@ $("hint").addEventListener("click",()=>{
  $("hintResult").textContent="";
  selectedHintIndex=null;
 });
-
+  
 function selectHint(index){
  if(found.has(index))return;
 
  selectedHintIndex=index;
 
- $("hintResult").textContent="選択中";
-}
+ $("hintResult").textContent="キャラクターを選択しました。";
+}  
 
 function showHint(type){
  if(selectedHintIndex===null){
