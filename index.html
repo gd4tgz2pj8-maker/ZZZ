@@ -104,8 +104,8 @@ const characters = [
  {name:"ビリー・キッド",aliases:["ビリー","びりー","びりー・きっど"]},
  {name:"猫宮又奈",aliases:["猫又","ねこみやまな","ねこまた"]},
  {name:"エレン・ジョー",aliases:["エレン","えれん","えれん・じょー"]},
- {name:"朱鳶",aliases:["しゅえん","シュエン"},
- {name:"青衣",aliases:["ちんいー","チンイー"},
+ {name:"朱鳶",aliases:["しゅえん","シュエン"]},
+ {name:"青衣",aliases:["ちんいー","チンイー"]},
  {name:"フォン・ライカン",aliases:["ライカン","らいかん","ふぉん・らいかん"]},
  {name:"アレクサンドリナ・セバスチャン",aliases:["リナ","りな","あれくさんどりな・せばすちゃん"]},
  {name:"グレース・ハワード",aliases:["グレース","ぐれーす","ぐれーす・はわーど"]},
@@ -157,7 +157,7 @@ const characters = [
  {name:"ノルムー・ホローウェル",aliases:["ノルムー","のるむー","のるむー・ほろーうぇる"]},
  {name:"レミエール・ダン",aliases:["レミエール","れみえーる","れみえーる・だん"]},
  {name:"シグリッド・ドゥ・ラズール",aliases:["シグリッド","しぐりっど","しぐりっど・どぅ・らずーる"]},
- {name:"クラレッタ"・フリンツ,aliases:["クラレッタ","くられった","くられった・ふりんつ"]},
+ {name:"クラレッタ・フリンツ",aliases:["クラレッタ","くられった","くられった・ふりんつ"]},
  {name:"ロクシー・イフリータ・プライス",aliases:["ロクシー","ろくしー","ろくしー・いふりーた・ぷらいす"]},
  {name:"フィオニー・レファエラ",aliases:["フィオニー","ふぃおにー","ふぃおにー・れふぁえら"]},
  {name:"セヴェリアン・ローウェル",aliases:["セヴェリアン","せゔぇりあん","せゔぇりあん・ろーうぇる"]}, 
@@ -202,7 +202,7 @@ function finish(){
  $("resulttext").textContent=found.size===characters.length?"全キャラクター正解！すごい！":"もう一度挑戦して、正解数を伸ばしてみよう！";
 }
 function reset(){
- clearInterval(timer);found=new Set();seconds=600;ended=false;
+ clearInterval(timer);found=new Set();seconds=1200;ended=false;
  $("quiz").classList.remove("hidden");$("result").classList.add("hidden");
  $("answer").value="";say("");updateTime();renderList();startTimer();
 }
