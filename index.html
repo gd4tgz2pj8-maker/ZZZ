@@ -170,12 +170,14 @@ function renderList(){
  $("list").innerHTML="";
  characters.forEach((c,i)=>{
   const d=document.createElement("div");d.className="answer"+(found.has(i)?" found":"");
-d.textContent=found.has(i)?c.name:"？？？？";
+d.textContent = found.has(i) ? c.name : "？？？？";
 
 if(!found.has(i)){
-  d.addEventListener("click",()=>selectHint(i));
+  d.addEventListener("click",()=>{
+    selectedHintIndex = i;
+    $("hintResult").textContent = "キャラクターを選択しました。";
+  });
 }
-
 $("list").appendChild(d);
  });
  $("score").textContent=found.size;
