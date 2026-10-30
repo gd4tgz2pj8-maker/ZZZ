@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ゼンゼロ キャラクター名前当てクイズ</title>
+<style>
+:root{--bg:#10131b;--panel:#1b202c;--panel2:#242b39;--text:#f3f5fa;--muted:#aab4c5;--accent:#f4c542;--green:#6ee7a8;--red:#ff7b86;--line:#343d4e}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#252d3c 0,#10131b 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:850px;margin:0 auto;padding:24px 16px 48px}
+header{text-align:center;padding:16px 0 24px}
+.logo{display:inline-block;color:#11131a;background:var(--accent);font-weight:900;letter-spacing:.08em;padding:6px 12px;border-radius:7px;transform:skew(-7deg)}
+h1{font-size:clamp(1.5rem,5vw,2.5rem);margin:14px 0 8px}
+.sub{color:var(--muted);margin:0}
+.card{background:rgba(27,32,44,.96);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 35px #0003}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat{background:var(--panel2);border-radius:12px;padding:12px;text-align:center}
+.stat small{display:block;color:var(--muted);font-size:.78rem}
+.stat strong{font-size:1.35rem}
+.progress{height:9px;background:#343d4e;border-radius:99px;overflow:hidden;margin:14px 0 22px}
+.progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.question{font-size:1.1rem;font-weight:700;text-align:center;margin:12px 0}
+.inputrow{display:flex;gap:8px;margin:18px 0 10px}
+input{width:100%;background:#111620;border:1px solid #465166;color:white;border-radius:10px;padding:14px;font-size:1rem;outline:none}
+input:focus{border-color:var(--accent)}
+button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.95rem;cursor:pointer}
+.primary{background:var(--accent);color:#161616}
+.secondary{background:#343d4e;color:var(--text)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.message{min-height:28px;font-weight:700;text-align:center;margin:10px 0}
+.message.good{color:var(--green)}.message.bad{color:var(--red)}
+.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:18px}
+.answer{background:#111620;border:1px solid var(--line);padding:9px 11px;border-radius:9px;color:var(--muted);font-size:.9rem}
+.answer.found{border-color:#3c9f72;color:var(--green);background:#142820}
+.footer{color:var(--muted);font-size:.82rem;text-align:center;margin-top:18px;line-height:1.6}
+.hidden{display:none}
+.result{text-align:center;padding:26px 8px}
+.result h2{font-size:2rem}
+.result strong{font-size:3rem;color:var(--accent)}
+@media(max-width:520px){.wrap{padding:14px 10px 30px}.card{padding:15px}.stats{gap:6px}.stat{padding:9px 5px}.stat strong{font-size:1.1rem}.inputrow{flex-direction:column}.inputrow button{width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<div class="logo">ZENLESS QUIZ</div>
+<h1>ゼンゼロ キャラクター名前当て</h1>
+<p class="sub">キャラクター名を入力して、何人答えられるか挑戦しよう！</p>
+</header>
+
+<section class="card" id="quiz">
+<div class="stats">
+<div class="stat"><small>正解数</small><strong id="score">0</strong></div>
+<div class="stat"><small>残り時間</small><strong id="time">10:00</strong></div>
+<div class="stat"><small>キャラクター数</small><strong id="total">0</strong></div>
+</div>
+<div class="progress"><span id="bar"></span></div>
+<p class="question">知っているキャラクターの名前を入力！</p>
+<div class="inputrow">
+<input id="answer" autocomplete="off" placeholder="例：アンビー" aria-label="キャラクター名">
+<button class="primary" id="submit">回答</button>
+</div>
+<div class="message" id="message" aria-live="polite"></div>
+<div class="actions">
+<button class="secondary" id="hint">ヒント</button>
+<button class="secondary" id="giveup">ギブアップ</button>
+<button class="secondary" id="reset">最初から</button>
+</div>
+<div class="list" id="list"></div>
+</section>
+
+<section class="card result hidden" id="result">
+<h2>クイズ終了！</h2>
+<p>正解数</p><strong id="finalscore">0</strong><p id="percent">0%</p>
+<p id="resulttext"></p>
+<div class="actions" style="justify-content:center"><button class="primary" id="again">もう一度遊ぶ</button></div>
+</section>
+<p class="footer">※これはクイズサイトのサンプルです。キャラクター一覧は編集できます。公式のゲーム素材・画像は含めていません。</p>
+</div>
+<script>
+// 下の配列に、クイズに出したいキャラクター名を追加してください。
+// 表記ゆれは aliases に登録できます。例：
+// { name: "キャラクター名", aliases: ["別表記", "よみ"] }
+const characters = [
+ {name:"アンビー",aliases:["アンビー・デマラ","あんびー"]},
+ {name:"ニコ",aliases:["ニコ・デマラ","にこ"]},
+ {name:"ビリー",aliases:["ビリー・キッド","びりー"]},
+ {name:"猫宮又奈",aliases:["猫又","ねこみやまたな"]},
+ {name:"エレン",aliases:["エレン・ジョー","えれん"]},
+ {name:"朱鳶",aliases:["しゅえん"]},
+ {name:"青衣",aliases:["ちんい"]},
+ {name:"ライカン",aliases:["フォン・ライカン","りーかん"]},
+ {name:"リナ",aliases:["アレクサンドリナ・セバスチャン","りな"]},
+ {name:"グレース",aliases:["グレース・ハワード","ぐれーす"]},
+ {name:"ベン",aliases:["ベン・ビガー","べん"]},
+ {name:"クレタ",aliases:["クレタ・ベロボーグ","くれた"]},
+ {name:"カリン",aliases:["カリン・ウィクス","かりん"]},
+ {name:"ルーシー",aliases:["ルシアナ・デ・モンテフィオ","るーしー"]},
+ {name:"パイパー",aliases:["パイパー・ウィール","ぱいぱー"]},
+ {name:"セス",aliases:["セス・ローウェル","せす"]},
+ {name:"ジェーン",aliases:["ジェーン・ドゥ","じぇーん"]},
+ {name:"バーニス",aliases:["バーニス・ホワイト","ばーにす"]},
+ {name:"シーザー",aliases:["シーザー・キング","しーざー"]},
+ {name:"柳",aliases:["やなぎ"]},
+ {name:"悠真",aliases:["はるまさ","浅羽悠真"]},
+ {name:"雅",aliases:["みやび","星見雅"]},
+ {name:"ライト",aliases:["フォン・ライカンではない","らいと"]},
+ {name:"イヴリン",aliases:["イヴリン・シェヴァリエ","いぶりん"]},
+ {name:"アストラ",aliases:["アストラ・ヤオ","あすとら"]},
+ {name:"イーシェン",aliases:["いーしぇん","儀玄"]},
+ {name:"橘福福",aliases:["ふくふく"]},
+ {name:"潘引壺",aliases:["ぱんいんふ"]},
+ {name:"葉瞬光",aliases:["ようしゅんこう"]},
+ {name:"儀玄",aliases:["ぎげん"]},
+ {name:"橘福福",aliases:["きっぷくふく"]},
+ {name:"照",aliases:["てる"]},
+ {name:"イドリー",aliases:["いどりー"]},
+ {name:"プルクラ",aliases:["ぷるくら"]},
+ {name:"トリガー",aliases:["とりがー"]},
+ {name:"オルペウス",aliases:["おるぺうす"]},
+ {name:"サンブリンガー",aliases:["さんぶりんがー"]},
+ {name:"星見雅",aliases:["ほしみみやび"]},
+ {name:"アリス",aliases:["ありす"]},
+ {name:"シーシィア",aliases:["しーしぃあ"]},
+ {name:"ユズハ",aliases:["ゆずは"]},
+ {name:"ミアズマ",aliases:["みあずま"]}
+];
+
+const $=id=>document.getElementById(id);
+let found=new Set(),seconds=600,timer=null,ended=false;
+const norm=s=>s.toLowerCase().replace(/[ 　・･\-‐‑—ー_]/g,"").replace(/[「」『』（）()]/g,"").trim();
+function renderList(){
+ $("list").innerHTML="";
+ characters.forEach((c,i)=>{
+  const d=document.createElement("div");d.className="answer"+(found.has(i)?" found":"");
+  d.textContent=found.has(i)?c.name:"？？？？";
+  $("list").appendChild(d);
+ });
+ $("score").textContent=found.size;
+ $("total").textContent=characters.length;
+ $("bar").style.width=(found.size/characters.length*100)+"%";
+}
+function say(text,type=""){ $("message").textContent=text;$("message").className="message "+type; }
+function startTimer(){
+ clearInterval(timer);timer=setInterval(()=>{if(ended)return;seconds--;updateTime();if(seconds<=0)finish();},1000);
+}
+function updateTime(){ $("time").textContent=Math.floor(seconds/60).toString().padStart(2,"0")+":"+Math.max(0,seconds%60).toString().padStart(2,"0");}
+function answer(){
+ if(ended)return;
+ const value=norm($("answer").value);if(!value)return;
+ const idx=characters.findIndex((c,i)=>!found.has(i)&&[c.name,...(c.aliases||[])].some(a=>norm(a)===value));
+ if(idx>=0){found.add(idx);$("answer").value="";say("正解！ "+characters[idx].name,"good");renderList();if(found.size===characters.length)finish();}
+ else say("まだ正解ではないみたい。別の名前も試してみて！","bad");
+}
+function finish(){
+ if(ended)return;ended=true;clearInterval(timer);
+ $("quiz").classList.add("hidden");$("result").classList.remove("hidden");
+ $("finalscore").textContent=found.size+" / "+characters.length;
+ const p=Math.round(found.size/characters.length*100);$("percent").textContent="達成率："+p+"%";
+ $("resulttext").textContent=found.size===characters.length?"全キャラクター正解！すごい！":"もう一度挑戦して、正解数を伸ばしてみよう！";
+}
+function reset(){
+ clearInterval(timer);found=new Set();seconds=600;ended=false;
+ $("quiz").classList.remove("hidden");$("result").classList.add("hidden");
+ $("answer").value="";say("");updateTime();renderList();startTimer();
+}
+$("submit").addEventListener("click",answer);
+$("answer").addEventListener("keydown",e=>{if(e.key==="Enter")answer();});
+$("hint").addEventListener("click",()=>{
+ const remaining=characters.filter((c,i)=>!found.has(i));
+ if(!remaining.length){say("全部正解済み！","good");return;}
+ const c=remaining[Math.floor(Math.random()*remaining.length)];
+ say("ヒント：未回答のキャラクターは "+remaining.length+" 人。所属や登場シーンを思い出してみよう！");
+});
+$("giveup").addEventListener("click",finish);
+$("reset").addEventListener("click",reset);
+$("again").addEventListener("click",reset);
+renderList();updateTime();startTimer();
+</script>
+</body>
+</html>
