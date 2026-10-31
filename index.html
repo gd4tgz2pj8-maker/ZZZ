@@ -861,19 +861,19 @@ function answer(){
 
 function renderFactionResults(){
 
-const legend = document.createElement("p");
-legend.innerHTML = '<span style="color:#ff5c65;">●</span>：未回答';  
-legend.style.color = "#ff5c65";
-legend.style.fontWeight = "bold";
-legend.style.marginBottom = "12px";
-
-resultList.appendChild(legend);
  const container=$("factionResults");
  container.innerHTML="";
 
+ // 未回答の凡例
+ const legend = document.createElement("p");
+ legend.innerHTML = '<span style="color:#ff5c65;">●</span>：未回答';
+ legend.style.fontWeight = "bold";
+ legend.style.marginBottom = "12px";
+
+ container.appendChild(legend);
+
  // キャラクターを陣営ごとにまとめる
  const factions={};
-
  characters.forEach(c=>{
   if(!factions[c.faction]){
    factions[c.faction]=[];
