@@ -124,7 +124,7 @@ button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.
 <p class="sub">キャラクター名を入力して、何人答えられるか挑戦しよう！</p>
 </header>
 
-<section class="card" id="quiz">
+<section class="card hidden" id="quiz">
 <div class="stats">
 <div class="stat"><small>正解数</small><strong id="score">0</strong></div>
 <div class="stat"><small>残り時間</small><strong id="time">30:00</strong></div>
@@ -1089,6 +1089,14 @@ $("hintAttribute").addEventListener("click", () => showHint("attribute"));
 $("hintRarity").addEventListener("click", () => showHint("rarity"));
 $("hintPersonal").addEventListener("click", () => showHint("personal"));
 
+// クイズ開始
+$("startButton").addEventListener("click", () => {
+  $("startScreen").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  startTimer();
+  $("answer").focus();
+});
+  
 // ギブアップ・リセット
 $("giveup").addEventListener("click", finish);
 $("reset").addEventListener("click", reset);
@@ -1104,7 +1112,6 @@ $("showAnswers").addEventListener("click", () => {
 // 初期表示
 renderList();
 updateTime();
-startTimer();
 </script>
 </body>
 </html>
