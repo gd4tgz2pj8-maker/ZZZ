@@ -861,6 +861,13 @@ function answer(){
 
 function renderFactionResults(){
 
+const legend = document.createElement("p");
+legend.innerHTML = '<span style="color:#ff5c65;">●</span>：未回答';  
+legend.style.color = "#ff5c65";
+legend.style.fontWeight = "bold";
+legend.style.marginBottom = "12px";
+
+resultList.appendChild(legend);
  const container=$("factionResults");
  container.innerHTML="";
 
@@ -949,6 +956,9 @@ function renderFactionResults(){
    }
 
    const name = document.createElement("p");
+   name.style.color = found.has(characters.indexOf(c))
+  ? "var(--text)"
+  : "#ff5c65";    
    name.textContent = c.name;
 
    card.appendChild(name);
