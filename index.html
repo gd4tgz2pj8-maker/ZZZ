@@ -874,10 +874,8 @@ function renderFactionResults(){
   factions[c.faction].push(c);
  });
 
- // 陣営ごとに表示
- Object.entries(factions).forEach(([faction,members])=>{
-// 陣営の表示順
-const factionOrder = [
+ // 陣営の表示順
+ const factionOrder = [
   "邪兎屋",
   "ヴィクトリア家政",
   "白祇重工",
@@ -898,10 +896,10 @@ const factionOrder = [
   "ダアト結社",
   "空域巡警局",
   "フリンツ工房"
-];
+ ];
 
-// 指定した順番で陣営を表示
-factionOrder.forEach(faction => {
+ // 指定した順番で陣営を表示
+ factionOrder.forEach(faction => {
   const members = factions[faction];
 
   if (!members) return;
@@ -955,9 +953,8 @@ factionOrder.forEach(faction => {
   section.appendChild(title);
   section.appendChild(grid);
   container.appendChild(section);
-});  
-}  
-
+ });
+}
 function finish(){
 
  if(ended)return;
