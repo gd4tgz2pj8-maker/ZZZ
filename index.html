@@ -54,6 +54,61 @@ button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.
 .result h2{font-size:2rem}
 .result strong{font-size:3rem;color:var(--accent)}
 @media(max-width:520px){.wrap{padding:14px 10px 30px}.card{padding:15px}.stats{gap:6px}.stat{padding:9px 5px}.stat strong{font-size:1.1rem}.inputrow{flex-direction:column}.inputrow button{width:100%}}
+/* クイズ終了後の陣営別一覧 */
+.faction-section{
+  margin-top:24px;
+  text-align:left;
+}
+
+.faction-title{
+  font-size:1.2rem;
+  font-weight:800;
+  padding:10px 12px;
+  margin-bottom:12px;
+  background:var(--panel2);
+  border-radius:10px;
+  border-left:4px solid var(--accent);
+}
+
+.faction-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  gap:12px;
+}
+
+.faction-character{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+  text-align:center;
+}
+
+.faction-character img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:contain;
+  background:#111620;
+  display:block;
+}
+
+.faction-character p{
+  font-size:.85rem;
+  font-weight:700;
+  padding:8px 4px;
+  margin:0;
+  overflow-wrap:anywhere;
+}
+
+.faction-character .no-image{
+  aspect-ratio:1/1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--muted);
+  font-size:.75rem;
+  background:#111620;
+}  
 </style>
 </head>
 <body>
@@ -106,9 +161,10 @@ button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.
 <h2>クイズ終了！</h2>
 <p>正解数</p><strong id="finalscore">0</strong><p id="percent">0%</p>
 <p id="resulttext"></p>
+<div id="factionResults"></div>
 <div class="actions" style="justify-content:center"><button class="primary" id="again">もう一度遊ぶ</button></div>
 </section>
-<p class="footer">※これはクイズサイトのサンプルです。キャラクター一覧は編集できます。公式のゲーム素材・画像は含めていません。</p>
+<p class="footer">※これはクイズサイトのサンプルです。</p>
 </div>
 <script>
 // 下の配列に、クイズに出したいキャラクター名を追加してください。
@@ -121,7 +177,8 @@ const characters = [
    personal:"ZZZアイコンガール 黄緑ver.",
    faction:"邪兎屋",
    attribute:"電気・撃破",
-   rarity:"A級"
+   rarity:"A級",
+   image:"https://act-webstatic.hoyoverse.com/event-static-hoyowiki-admin/2024/05/28/43aeb29d176e10c9713b3b9b6ac0dd3a_2384682618213467101.png"
  },
  {
    name:"ニコ・デマラ",
@@ -129,15 +186,17 @@ const characters = [
    personal:"はやくツケ払ってね",
    faction:"邪兎屋",
    attribute:"エーテル・支援",
-   rarity:"A級" 
-  },
+   rarity:"A級",
+   image:"https://act-webstatic.hoyoverse.com/event-static-hoyowiki-admin/2024/05/23/3815b87d0e526b12127e69f5baed3fa7_2071488341033625974.png"
+ },
  {
    name:"ビリー・キッド",
    aliases:["ビリー","びりー","びりー・きっど"],
    personal:"スターライトナイト",
    faction:"邪兎屋",
    attribute:"物理・強攻",
-   rarity:"A級"
+   rarity:"A級",
+   image:"https://act-webstatic.hoyoverse.com/event-static-hoyowiki-admin/2024/05/28/3db23765159cef54aecb564a310aa214_5875819227834946917.png"   
  },
  {
    name:"猫宮又奈",
@@ -653,13 +712,111 @@ function answer(){
  if(idx>=0){found.add(idx);$("answer").value="";say("正解！ "+characters[idx].name,"good");renderList();if(found.size===characters.length)finish();}
  else say("まだ正解ではないみたい。別の名前も試してみて！","bad");
 }
+function renderFactionResults(){
+
+ const container=$("factionResults");
+ container.innerHTML="";
+
+ // キャラクターを陣営ごとにまとめる
+ const factions={};
+
+ characters.forEach(c=>{
+  if(!factions[c.faction]){
+   factions[c.faction]=[];
+  }
+
+  factions[c.faction].push(c);
+ });
+
+ // 陣営ごとに表示
+ Object.entries(factions).forEach(([faction,members])=>{
+
+  const section=document.createElement("div");
+  section.className="faction-section";
+
+  const title=document.createElement("h3");
+  title.className="faction-title";
+  title.textContent=faction;
+
+  const grid=document.createElement("div");
+  grid.className="faction-grid";
+
+  members.forEach(c=>{
+
+   const card=document.createElement("div");
+   card.className="faction-character";
+
+   // 画像
+   if(c.image){
+
+    const img=document.createElement("img");
+    img.src=c.image;
+    img.alt=c.name;
+
+    img.onerror=()=>{
+     img.style.display="none";
+
+     const noImage=document.createElement("div");
+     noImage.className="no-image";
+     noImage.textContent="画像未設定";
+
+     card.prepend(noImage);
+    };
+
+    card.appendChild(img);
+
+   }else{
+
+    const noImage=document.createElement("div");
+    noImage.className="no-image";
+    noImage.textContent="画像未設定";
+
+    card.appendChild(noImage);
+   }
+
+   // 名前
+   const name=document.createElement("p");
+   name.textContent=c.name;
+
+   card.appendChild(name);
+   grid.appendChild(card);
+
+  });
+
+  section.appendChild(title);
+  section.appendChild(grid);
+
+  container.appendChild(section);
+
+ });
+}  
 function finish(){
- if(ended)return;ended=true;clearInterval(timer);
- $("quiz").classList.add("hidden");$("result").classList.remove("hidden");
- $("finalscore").textContent=found.size+" / "+characters.length;
- const p=Math.round(found.size/characters.length*100);$("percent").textContent="達成率："+p+"%";
- $("resulttext").textContent=found.size===characters.length?"全キャラクター正解！すごい！":"もう一度挑戦して、正解数を伸ばしてみよう！";
-}
+
+ if(ended)return;
+
+ ended=true;
+ clearInterval(timer);
+
+ $("quiz").classList.add("hidden");
+ $("result").classList.remove("hidden");
+
+ $("finalscore").textContent=
+  found.size+" / "+characters.length;
+
+ const p=Math.round(
+  found.size/characters.length*100
+ );
+
+ $("percent").textContent="達成率："+p+"%";
+
+ $("resulttext").textContent=
+  found.size===characters.length
+  ?"全キャラクター正解！すごい！"
+  :"もう一度挑戦して、正解数を伸ばしてみよう！";
+
+ // 陣営別キャラクター一覧を表示
+ renderFactionResults();
+}  
 function reset(){
  clearInterval(timer);found=new Set();seconds=1200;ended=false;
  $("quiz").classList.remove("hidden");$("result").classList.add("hidden");
