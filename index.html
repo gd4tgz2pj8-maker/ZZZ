@@ -6,7 +6,7 @@
 <title>ゼンゼロ キャラクター名前当てクイズ</title>
 <style>
 .answer.selected {
-  background: #dceeff;
+  background: #111620;
   border: 2px solid #3498db;
   color: #1769aa;
 }  
@@ -32,6 +32,16 @@ input:focus{border-color:var(--accent)}
 button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.95rem;cursor:pointer}
 .primary{background:var(--accent);color:#161616}
 .secondary{background:#343d4e;color:var(--text)}
+.hint-buttons{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.hint-buttons button{
+  background:var(--accent);
+  color:#161616;
+}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
 .message{min-height:28px;font-weight:700;text-align:center;margin:10px 0}
 .message.good{color:var(--green)}.message.bad{color:var(--red)}
