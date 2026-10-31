@@ -1001,22 +1001,6 @@ function showHint(type){
  labels[type]+"："+(hintData[type]||"ヒント未登録");
 }
 
-$("hintFaction").addEventListener("click",()=>showHint("faction"));
-$("hintAttribute").addEventListener("click",()=>showHint("attribute"));
-$("hintRarity").addEventListener("click",()=>showHint("rarity")); 
-$("hintPersonal").addEventListener("click",()=>showHint("personal"));
-$("giveup").addEventListener("click",finish);
-$("reset").addEventListener("click",reset);
-$("again").addEventListener("click",reset);
-$("showAnswers").addEventListener("click",()=>{
-
- renderFactionResults();
-
- $("factionResults").classList.remove("hidden");
-
- $("showAnswers").classList.add("hidden");
-
-});  
 
 
 function reset(){
@@ -1082,8 +1066,5 @@ renderList();
 updateTime();
 startTimer();
 </script>
-</body>
-</html>
-  
 </body>
 </html>
