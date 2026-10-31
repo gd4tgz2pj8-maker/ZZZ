@@ -941,119 +941,7 @@ function finish(){
  $("showAnswers").classList.remove("hidden");
 }
 
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ゼンゼロ キャラクター名前当てクイズ</title>
-<style>
-.answer.selected {
-  background: #111620;
-  border: 2px solid #3498db;
-  color: #1769aa;
-}  
-:root{--bg:#10131b;--panel:#1b202c;--panel2:#242b39;--text:#f3f5fa;--muted:#aab4c5;--accent:#EE7C14;--green:#6ee7a8;--red:#ff7b86;--line:#343d4e}
-*{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at top,#252d3c 0,#10131b 55%);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
-.wrap{max-width:850px;margin:0 auto;padding:24px 16px 48px}
-header{text-align:center;padding:16px 0 24px}
-.logo{display:inline-block;color:#11131a;background:var(--accent);font-weight:900;letter-spacing:.08em;padding:6px 12px;border-radius:7px;transform:skew(-7deg)}
-h1{font-size:clamp(1.5rem,5vw,2.5rem);margin:14px 0 8px}
-.sub{color:var(--muted);margin:0}
-.card{background:rgba(27,32,44,.96);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 35px #0003}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
-.stat{background:var(--panel2);border-radius:12px;padding:12px;text-align:center}
-.stat small{display:block;color:var(--muted);font-size:.78rem}
-.stat strong{font-size:1.35rem}
-.progress{height:9px;background:#343d4e;border-radius:99px;overflow:hidden;margin:14px 0 22px}
-.progress span{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
-.question{font-size:1.1rem;font-weight:700;text-align:center;margin:12px 0}
-.inputrow{display:flex;gap:8px;margin:18px 0 10px}
-input{width:100%;background:#111620;border:1px solid #465166;color:white;border-radius:10px;padding:14px;font-size:1rem;outline:none}
-input:focus{border-color:var(--accent)}
-button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.95rem;cursor:pointer}
-.primary{background:var(--accent);color:#161616}
-.secondary{background:#343d4e;color:var(--text)}
-.hint-buttons{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
 
-.hint-buttons button{
-  background:var(--accent);
-  color:#161616;
-}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.message{min-height:28px;font-weight:700;text-align:center;margin:10px 0}
-.message.good{color:var(--green)}.message.bad{color:var(--red)}
-.list{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:18px}
-.answer{background:#111620;border:1px solid var(--line);padding:9px 11px;border-radius:9px;color:var(--muted);font-size:.9rem}
-.answer.found{border-color:#3c9f72;color:var(--green);background:#142820}
-.footer{color:var(--muted);font-size:.82rem;text-align:center;margin-top:18px;line-height:1.6}
-.hidden{display:none}
-.result{text-align:center;padding:26px 8px}
-.result h2{font-size:2rem}
-.result strong{font-size:3rem;color:var(--accent)}
-@media(max-width:520px){.wrap{padding:14px 10px 30px}.card{padding:15px}.stats{gap:6px}.stat{padding:9px 5px}.stat strong{font-size:1.1rem}.inputrow{flex-direction:column}.inputrow button{width:100%}}
-/* クイズ終了後の陣営別一覧 */
-.faction-section{
-  margin-top:24px;
-  text-align:left;
-}
-
-.faction-title{
-  font-size:1.2rem;
-  font-weight:800;
-  padding:10px 12px;
-  margin-bottom:12px;
-  background:var(--panel2);
-  border-radius:10px;
-  border-left:4px solid var(--accent);
-}
-
-.faction-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
-  gap:12px;
-}
-
-.faction-character{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:12px;
-  overflow:hidden;
-  text-align:center;
-}
-
-.faction-character img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:contain;
-  background:#111620;
-  display:block;
-}
-
-.faction-character p{
-  font-size:.85rem;
-  font-weight:700;
-  padding:8px 4px;
-  margin:0;
-  overflow-wrap:anywhere;
-}
-
-.faction-character .no-image{
-  aspect-ratio:1/1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--muted);
-  font-size:.75rem;
-  background:#111620;
-}  
-</style>
-</head>
 <body>
 <div class="wrap">
 <header>
@@ -1679,6 +1567,79 @@ const characters = [
    image:"https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2026/10/20/59155606/2cec2fcbccf6c48d0f5d1b434a5014a0_4079242178332058189.png"   
  }, 
 ];
+const implementationOrder = [
+  "エレン・ジョー",
+  "猫宮又奈",
+  "アンビー・デマラ",
+  "ビリー・キッド",
+  "ニコ・デマラ",
+  "フォン・ライカン",
+  "アレクサンドリナ・セバスチャン",
+  "カリン・ウィクス",
+  "グレース・ハワード",
+  "クレタ・ベロボーグ",
+  "アンドー・イワノフ",
+  "ベン・ビガー",
+  "パイパー・ウィール",
+  "ルシアーナ・デ・モンテフィーノ",
+  "「11号」",
+  "蒼角",
+  "朱鳶",
+  "青衣",
+  "ジェーン・ドゥ",
+  "セス・ローウェル",
+  "キング・シーザー",
+  "バーニス・ホワイト",
+  "月城柳",
+  "ライト",
+  "星見雅",
+  "浅羽悠真",
+  "アストラ・ヤオ",
+  "イヴリン・シェヴァリエ",
+  "0号・アンビー",
+  "プルクラ・フェリーニ",
+  "「トリガー」",
+  "ビビアン・バンシー",
+  "ヒューゴ・ヴラド",
+  "儀玄",
+  "潘引壺",
+  "橘福福",
+  "浮波柚葉",
+  "アリス・タイムフィールド",
+  "「シード」",
+  "オルペウス・マグヌッソン＆「鬼火」",
+  "リュシア・エロウェン",
+  "狛野真斗",
+  "イドリー・マーフィー",
+  "ダイアリン",
+  "盤岳",
+  "葉瞬光",
+  "照",
+  "千夏",
+  "アリア",
+  "南宮羽",
+  "シーシィア",
+  "プロメイア",
+  "スターライト・ビリー・キッド",
+  "ヴェリナ・エガード",
+  "ピュロイス",
+  "ノルムー・ホローウェル",
+  "レミエール・ダン",
+  "シグリッド・ドゥ・ラズール",
+  "クラレッタ・フリンツ",
+  "ロクシー・イフリータ・プライス",
+  "フィオニー・レファエラ",
+  "セヴェリアン・ローウェル"
+];
+
+const orderMap = new Map(
+  implementationOrder.map((name, index) => [name, index])
+);
+
+characters.sort((a, b) =>
+  (orderMap.get(a.name) ?? Infinity) -
+  (orderMap.get(b.name) ?? Infinity)
+);  
 
 const $=id=>document.getElementById(id);
 let found=new Set(),seconds=1200,timer=null,ended=false;
