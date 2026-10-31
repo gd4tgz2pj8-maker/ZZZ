@@ -172,69 +172,6 @@ button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.
 </section>
 <p class="footer">※これはクイズサイトのサンプルです。</p>
 </div>
-
-
-<body>
-<div class="wrap">
-<header>
-<div class="logo">ZZZ QUIZ</div>
-<h1>ゼンゼロ キャラクター名前当て</h1>
-<p class="sub">キャラクター名を入力して、何人答えられるか挑戦しよう！</p>
-</header>
-
-<section class="card" id="quiz">
-<div class="stats">
-<div class="stat"><small>正解数</small><strong id="score">0</strong></div>
-<div class="stat"><small>残り時間</small><strong id="time">20:00</strong></div>
-<div class="stat"><small>キャラクター数</small><strong id="total">0</strong></div>
-</div>
-<div class="progress"><span id="bar"></span></div>
-<p class="question">知っているキャラクターの名前を入力！</p>
-<div class="inputrow">
-<input id="answer" autocomplete="off" placeholder="ここにキャラの名前をいれてね！" aria-label="キャラクター名">
-<button class="primary" id="submit">回答</button>
-</div>
-<div class="message" id="message" aria-live="polite"></div>
-<div class="actions">
-
-<button class="secondary" id="hint">ヒント</button>
-
-<div id="hintPanel" style="display:none;">
-  <p>ヒントを見たい「？？？？」のマスをタップ</p>
-
-  <div class="hint-buttons">
-    <button id="hintPersonal">ﾕから一言</button>
-    <button type="button" id="hintFaction">陣営</button>
-    <button type="button" id="hintAttribute">属性・特性</button>
-    <button type="button" id="hintRarity">レア度</button>
-  </div>
-
-  <p>マスを選び、見たいヒントだけ開いてね。</p>
-
-  <div id="hintResult"></div>
-</div>
-
-<button class="secondary" id="giveup">ギブアップ</button>
-<button class="secondary" id="reset">最初から</button> 
-</div>
-<div class="list" id="list"></div>
-</section>
-
-<section class="card result hidden" id="result">
-<h2>クイズ終了！</h2>
-<p>正解数</p><strong id="finalscore">0</strong><p id="percent">0%</p>
-<p id="resulttext"></p>
-
-<div class="actions" style="justify-content:center">
-  <button class="primary" id="again">もう一度遊ぶ</button>
-  <button class="primary" id="showAnswers">答えを見る</button>
-</div>
-
-<div id="factionResults" class="hidden"></div>
-
-</section>
-<p class="footer">※これはクイズサイトのサンプルです。</p>
-</div>
 <script>
 // 下の配列に、クイズに出したいキャラクター名を追加してください。
 // 表記ゆれは aliases に登録できます。例：
@@ -873,10 +810,18 @@ characters.sort((a, b) =>
   (orderMap.get(b.name) ?? Infinity)
 );  
 
-const $=id=>document.getElementById(id);
-let found=new Set(),seconds=1200,timer=null,ended=false;
-const norm=s=>s.toLowerCase().replace(/[ 　・･\-‐‑—ー_]/g,"").replace(/[「」『』（）()]/g,"").trim();
+const $ = id => document.getElementById(id);
 
+let found = new Set();
+let seconds = 1200;
+let timer = null;
+let ended = false;
+let selectedHintIndex = null;
+
+const norm = s => String(s).toLowerCase()
+  .replace(/[ 　・･\-‐‑—ー_]/g, "")
+  .replace(/[「」『』（）()]/g, "")
+  .trim();
 function renderList(){
  $("list").innerHTML="";
 
@@ -954,16 +899,16 @@ function renderFactionResults(){
     img.src=c.image;
     img.alt=c.name;
 
-    img.onerror=()=>{
-     img.style.display="none";
+    img.onerror = () => {
+  img.onerror = null;
+  img.remove();
 
-     const noImage=document.createElement("div");
-     noImage.className="no-image";
-     noImage.textContent="画像未設定";
+  const noImage = document.createElement("div");
+  noImage.className = "no-image";
+  noImage.textContent = "画像未設定";
 
-     card.prepend(noImage);
-    };
-
+  card.prepend(noImage);
+};
     card.appendChild(img);
 
    }else{
@@ -1072,7 +1017,73 @@ $("showAnswers").addEventListener("click",()=>{
  $("showAnswers").classList.add("hidden");
 
 });  
-renderList();updateTime();startTimer();
+
+
+function reset(){
+  clearInterval(timer);
+
+  found = new Set();
+  seconds = 1200;
+  ended = false;
+  selectedHintIndex = null;
+
+  $("answer").value = "";
+  $("hintResult").textContent = "";
+  $("message").textContent = "";
+
+  $("hintPanel").style.display = "none";
+
+  $("quiz").classList.remove("hidden");
+  $("result").classList.add("hidden");
+  $("factionResults").classList.add("hidden");
+  $("showAnswers").classList.remove("hidden");
+
+  renderList();
+  updateTime();
+  startTimer();
+}
+
+// 回答ボタン
+$("submit").addEventListener("click", answer);
+
+// Enterキーでも回答
+$("answer").addEventListener("keydown", e => {
+  if(e.key === "Enter") answer();
+});
+
+// ヒントパネルの開閉
+$("hint").addEventListener("click", () => {
+  const panel = $("hintPanel");
+
+  panel.style.display =
+    panel.style.display === "none" ? "block" : "none";
+});
+
+// ヒント
+$("hintFaction").addEventListener("click", () => showHint("faction"));
+$("hintAttribute").addEventListener("click", () => showHint("attribute"));
+$("hintRarity").addEventListener("click", () => showHint("rarity"));
+$("hintPersonal").addEventListener("click", () => showHint("personal"));
+
+// ギブアップ・リセット
+$("giveup").addEventListener("click", finish);
+$("reset").addEventListener("click", reset);
+$("again").addEventListener("click", reset);
+
+// 答えを見る
+$("showAnswers").addEventListener("click", () => {
+  renderFactionResults();
+  $("factionResults").classList.remove("hidden");
+  $("showAnswers").classList.add("hidden");
+});
+
+// 初期表示
+renderList();
+updateTime();
+startTimer();
 </script>
+</body>
+</html>
+  
 </body>
 </html>
