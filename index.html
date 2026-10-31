@@ -858,6 +858,7 @@ function answer(){
  if(idx>=0){found.add(idx);$("answer").value="";say("正解！ "+characters[idx].name,"good");renderList();if(found.size===characters.length)finish();}
  else say("まだ正解ではないみたい。別の名前も試してみて！","bad");
 }
+
 function renderFactionResults(){
 
  const container=$("factionResults");
@@ -900,8 +901,10 @@ function renderFactionResults(){
 
  // 指定した順番で陣営を表示
  factionOrder.forEach(faction => {
+
   const members = factions[faction];
 
+  // キャラクターがいない陣営は表示しない
   if (!members) return;
 
   const section = document.createElement("div");
@@ -915,46 +918,50 @@ function renderFactionResults(){
   grid.className = "faction-grid";
 
   members.forEach(c => {
-    const card = document.createElement("div");
-    card.className = "faction-character";
 
-    if (c.image) {
-      const img = document.createElement("img");
-      img.src = c.image;
-      img.alt = c.name;
+   const card = document.createElement("div");
+   card.className = "faction-character";
 
-      img.onerror = () => {
-        img.onerror = null;
-        img.remove();
+   if (c.image) {
+    const img = document.createElement("img");
+    img.src = c.image;
+    img.alt = c.name;
 
-        const noImage = document.createElement("div");
-        noImage.className = "no-image";
-        noImage.textContent = "画像未設定";
+    img.onerror = () => {
+     img.onerror = null;
+     img.remove();
 
-        card.prepend(noImage);
-      };
+     const noImage = document.createElement("div");
+     noImage.className = "no-image";
+     noImage.textContent = "画像未設定";
 
-      card.appendChild(img);
-    } else {
-      const noImage = document.createElement("div");
-      noImage.className = "no-image";
-      noImage.textContent = "画像未設定";
+     card.prepend(noImage);
+    };
 
-      card.appendChild(noImage);
-    }
+    card.appendChild(img);
 
-    const name = document.createElement("p");
-    name.textContent = c.name;
+   } else {
+    const noImage = document.createElement("div");
+    noImage.className = "no-image";
+    noImage.textContent = "画像未設定";
 
-    card.appendChild(name);
-    grid.appendChild(card);
+    card.appendChild(noImage);
+   }
+
+   const name = document.createElement("p");
+   name.textContent = c.name;
+
+   card.appendChild(name);
+   grid.appendChild(card);
+
   });
 
   section.appendChild(title);
   section.appendChild(grid);
   container.appendChild(section);
+
  });
-}
+}  
 function finish(){
 
  if(ended)return;
