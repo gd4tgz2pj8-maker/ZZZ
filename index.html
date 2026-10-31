@@ -75,6 +75,7 @@ button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.
   <p>ヒントを見たい「？？？？」のマスをタップ</p>
 
   <div class="hint-buttons">
+    <button id="hintPersonal">ﾕから一言</button>
     <button type="button" id="hintFaction">陣営</button>
     <button type="button" id="hintAttribute">属性・特性</button>
     <button type="button" id="hintRarity">レア度</button>
@@ -270,7 +271,8 @@ function showHint(type){
 
 $("hintFaction").addEventListener("click",()=>showHint("faction"));
 $("hintAttribute").addEventListener("click",()=>showHint("attribute"));
-$("hintRarity").addEventListener("click",()=>showHint("rarity"));  
+$("hintRarity").addEventListener("click",()=>showHint("rarity")); 
+$("hintPersonal").addEventListener("click",()=>showHint("personal"));
 $("giveup").addEventListener("click",finish);
 $("reset").addEventListener("click",reset);
 $("again").addEventListener("click",reset);
