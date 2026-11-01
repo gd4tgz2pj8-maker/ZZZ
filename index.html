@@ -109,6 +109,18 @@ button{border:0;border-radius:10px;padding:12px 16px;font-weight:750;font-size:.
   font-size:.75rem;
   background:#111620;
 }  
+/* スマホ表示：陣営別一覧を横3列にする */
+@media screen and (max-width: 600px) {
+  .faction-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .faction-character p {
+    font-size: 0.75rem;
+    padding: 7px 2px;
+  }
+}
 </style>
 </head>
 <body>
